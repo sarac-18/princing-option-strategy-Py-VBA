@@ -1,7 +1,7 @@
 # princing-option-strategy-py
 
 **INTRODUZIONE**
-questo progetto ha l'obiettivo di prezzare una stategia di opzioni, detta _“Bull Put Spread”_. In questa caso, la tipologia di opzioni che formano la strategia sono ** asiatiche** . 
+questo progetto ha l'obiettivo di prezzare una stategia di opzioni, detta _“Bull Put Spread”_. In questa caso, la tipologia di opzioni che formano la strategia sono** asiatiche**. 
 Il payoff di un'opzione asiatica è il seguente:
 - CALL= MAX(S(T)- K, 0)
 - PUT= MAX (K- S(T),0)

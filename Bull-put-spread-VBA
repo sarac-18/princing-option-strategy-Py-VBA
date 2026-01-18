@@ -1,0 +1,277 @@
+Function BULL_putspread(m, n, T, r, sigma, S0, KITM, KOTM, seed)
+Dim i As Long, time As Long
+    Dim S() As Double, dT As Double, drift As Double, vol As Double
+    
+    dT = T / n
+    drift = (r - sigma ^ 2 / 2) * dT
+    vol = sigma * dT ^ 0.5
+    
+ ReDim S(1 To m, 1 To n) 'array sottostante
+    
+ Dim price_average() As Double 'array price_average
+ ReDim price_average(1 To m)
+    
+ Randomize seed
+    
+    
+'SIMULAZIONE PASSEGGIATE ALEATORIE DEL SOTTOSTANTE
+'PRIMO STEP PER OGNI SIMULAZIONE
+ For i = 1 To m
+    S(i, 1) = S0 * Exp(drift + vol * Application.WorksheetFunction.Norm_S_Inv(Rnd()))
+ Next i
+              
+              
+'PER GLI STEP SUCCESSIVI
+ For i = 1 To m
+    totale = S(i, 1) + S0
+    For time = 2 To n
+        S(i, time) = S(i, time - 1) * Exp(drift + vol * Application.WorksheetFunction.Norm_S_Inv(Rnd()))
+        totale = totale + S(i, time)
+    Next time
+    price_average(i) = totale / (n + 1)
+ Next i
+   
+'STAMPA VALORI DEL SOTTOSTANTE SUL FOGLIO EXCEL
+ Worksheets("sottostante").Activate
+ For i = 1 To m
+    For time = 1 To n
+     Range("A1").Offset(i, time) = S(i, time)
+    Next time
+ Next i
+  
+'STAMPA SOTTOSTANTE AL TEMPO T SUL FOGLIO EXCEL
+ Worksheets("payoff").Activate
+ For i = 1 To m
+    Range("c1").Offset(i) = S(i, n)
+ Next i
+  
+  
+ 
+'PAYOFF OPZIONI ITM E OTM
+ Dim payoff_exerciseITM() As Double
+ ReDim payoff_exerciseITM(1 To m) 'array payoff ITM
+ 
+ Dim payoff_exerciseOTM() As Double
+ ReDim payoff_exerciseOTM(1 To m)  'array payoff OTM
+    
+'CALCOLO DEI PAYOFF DELLE PUT ASIATICHE PER OGNI SIMULAZIONE
+  For i = 1 To m
+    payoff_exerciseITM(i) = Application.WorksheetFunction.Max(KITM - price_average(i), 0)
+  Next i
+   
+   
+  For i = 1 To m
+    payoff_exerciseOTM(i) = Application.WorksheetFunction.Max(KOTM - price_average(i), 0)
+  Next i
+   
+
+'STAMPA PAYOFF DELLE PUT SUL FOGLIO EXCEL
+ Worksheets("payoff").Activate
+ For i = 1 To m
+    Range("a1").Offset(i) = payoff_exerciseOTM(i)
+ Next i
+   
+ Worksheets("payoff").Activate
+ For i = 1 To m
+    Range("b1").Offset(i) = payoff_exerciseITM(i)
+ Next i
+   
+'SOMMA DI TUTTI I PAY OFF, che serviranno per trovare il valore medio
+ ExITM = 0
+ For i = 1 To m
+    ExITM = ExITM + payoff_exerciseITM(i)
+ Next i
+    
+ ExOTM = 0
+ For i = 1 To m
+    ExOTM = ExOTM + payoff_exerciseOTM(i)
+ Next i
+    
+'CALCOLO DEL VALORE ATTUALE
+ BULL_putspread = ((ExOTM / m) - (ExITM / m)) * Exp(-r * T)
+   
+'DEFINISCO ARRAY DELLA STRATEGIA BULL PUT SPREAD
+ Dim bullputspread() As Double
+ ReDim bullputspread(1 To m)
+   
+'CALCOLO DEL VALORE DELLA STRATEGIA PER OGNI SIMULAZIONE NON ATTUALIZZATO
+ For i = 1 To m
+   bullputspread(i) = payoff_exerciseOTM(i) - payoff_exerciseITM(i)
+ Next i
+   
+'STAMPA DEL VALORE DELLA STRATEGIA SUL FOGLIO EXCEL
+ Worksheets("payoff").Activate
+  For i = 1 To m
+     Range("d1").Offset(i) = bullputspread(i)
+  Next i
+  
+   
+End Function
+
+Sub pulsante_click()
+  Dim S0 As Double      'SOTTOSTANTE t0
+  Dim KOTM As Double      'STRIKE otm
+  Dim KITM As Double      'STRIKE itm
+  Dim T As Double         'Tempo a scadenza in frazioni di anno
+  Dim r As Double         'tasso risk-free
+  Dim sigma As Double     'Volatilità
+  Dim n As Double         'n step
+  Dim prSTR As Double     'Prezzo calcolato della strategia
+  Dim m As Double         'm simulazioni
+  Dim seed As Variant     'seme
+
+
+  
+'PRENDERE DATI DAL FOGLIO EXCEL
+ Worksheets("Dati").Activate
+  S0 = Range("B2")
+  KOTM = Range("B3")
+  KITM = Range("B4")
+  T = Range("B5")
+  n = Range("B6")
+  r = Range("B7")
+  sigma = Range("B8")
+  m = Range("B11")
+  seed = Range("B12")
+  
+  
+ prSTR = BULL_putspread(m, n, T, r, sigma, S0, KITM, KOTM, seed)
+
+'STAMPA IL PREZZO DELLA STRATEGIA
+ Worksheets("Dati").Activate
+  Range("E2") = prSTR
+  
+End Sub
+
+Function bullspreadscad(m, n, T, r, sigma, S0 As Double, KITM, KOTM, seed)
+Dim i As Long, time As Long
+    Dim S2() As Double, dT As Double, drift As Double, vol As Double
+    
+    dT = T / n
+    drift = (r - sigma ^ 2 / 2) * dT
+    vol = sigma * dT ^ 0.5
+    
+ ReDim S2(1 To m, 1 To n) 'array sottostante
+ 
+ Dim price_average2() As Double 'array price_average
+ ReDim price_average2(1 To m)
+    
+ Randomize seed
+    
+    
+    
+'SIMULAZIONE DELLE PASSEGGIATE ALEATORIE DEL SOTTOSTANTE
+'1 step
+ For i = 1 To m
+    S2(i, 1) = S0 * Exp(drift + vol * Application.WorksheetFunction.Norm_S_Inv(Rnd()))
+ Next i
+'step successivi
+ For i = 1 To m
+    totale = S2(i, 1) + S0
+    For time = 2 To n
+        S2(i, time) = S2(i, time - 1) * Exp(drift + vol * Application.WorksheetFunction.Norm_S_Inv(Rnd()))
+        totale = totale + S2(i, time)
+    Next time
+    price_average2(i) = totale / (n + 1)
+ Next i
+    
+
+'PAYOFF OPZIONI ITM E OTM
+ 
+ Dim payoff_exerciseITM2() As Double
+ ReDim payoff_exerciseITM2(1 To m) 'array payoff ITM
+ 
+ Dim payoff_exerciseOTM2() As Double
+ ReDim payoff_exerciseOTM2(1 To m)  'array payoff OTM
+    
+'CALCOLO PAYOFF PUT ITM E OTM
+ For i = 1 To m
+    payoff_exerciseITM2(i) = Application.WorksheetFunction.Max(KITM - price_average2(i), 0)
+ Next i
+   
+   
+ For i = 1 To m
+    payoff_exerciseOTM2(i) = Application.WorksheetFunction.Max(KOTM - price_average2(i), 0)
+ Next i
+   
+ 
+ sommaITM2 = 0
+ For i = 1 To m
+    sommaITM2 = sommaITM2 + payoff_exerciseITM2(i)
+ Next i
+ 
+ SommaOTM2 = 0
+ For i = 1 To m
+    SommaOTM2 = SommaOTM2 + payoff_exerciseOTM2(i)
+ Next i
+    
+'DIFFERENZA TRA VALORI ATTESI PER TROVARE VALORE STRATEGIA A SCADENZA
+ bullspreadscad = (SommaOTM2 / m) - (sommaITM2 / m)
+   
+End Function
+
+Sub riskgraph()
+
+Dim arrS1() As Double   'array sottostante
+Dim arrbull() As Double 'array strategia
+Dim r As Double         'tasso risk free
+Dim sigma As Double     'volatilità
+Dim m As Long           'simulazioni
+Dim LIMInfS1 As Double  'limite superiore
+Dim LIMSupS1 As Double  'limite inferiore
+Dim stepS1 As Double    'passo=10
+Dim lenS1 As Integer    'lunghezza dell'intervallo di valori del sottostante
+Dim T As Double         'expiry
+Dim n As Long           'n step
+Dim S0 As Double        'sottostante al tempo 0
+
+
+ 'PRENDIAMO I DATI DAL FOGLIO EXCEL
+
+  Worksheets("Dati").Activate
+  S0 = Range("B2")
+  KOTM = Range("B3")
+  KITM = Range("B4")
+  T = Range("B5")
+  n = Range("B6")
+  r = Range("B7")
+  sigma = Range("B8")
+  m = Range("B11")
+  seed = Range("B12")
+  LIMSupS1 = Range("B13")
+  LIMInfS1 = Range("B14")
+  stepS1 = Range("B15")
+  
+
+ 'DEFINIRE LUNGHEZZA DELL'ARRAY DEL SOTTOSTANTE E DELLA STRATEGIA
+ lenS1 = (LIMSupS1 - LIMInfS1) / stepS1   '(185)
+
+ ReDim arrS1(lenS1)
+
+'CALCOLO INTERVALLO DI VALORI DEL SOTTOSTANTE CON PASSO 10
+ For i = 0 To (lenS1)
+    arrS1(i) = LIMInfS1 + stepS1 * i
+ Next i
+
+'STAMPA DEL SOTTOSTANTE SUL FOGLIO EXCEL (X)
+ Worksheets("risk_graph").Activate
+ For i = 0 To (lenS1)
+   Range("a2").Offset(i) = arrS1(i)
+ Next i
+
+'REDIMENSIONARE ARRAY DELLA STRATEGIA
+ ReDim arrbull(lenS1)
+ 
+'CALCOLO VALORI CHE LA STRATEGIA ASSUME PER OGNI VALORE DEL SOTTOSTANTE DEFINITO NELL'INTERVALLO
+ For i = 0 To (lenS1)
+    arrbull(i) = bullspreadscad(m, n, T, r, sigma, arrS1(i), KITM, KOTM, seed)
+ Next i
+
+'STAMPARE VALORE DELLA STRATEGIA SUL FOGLIO EXCEL (Y)
+ Worksheets("risk_graph").Activate
+ For i = 0 To (lenS1)
+    Range("b2").Offset(i) = arrbull(i)
+ Next i
+
+End Sub
+

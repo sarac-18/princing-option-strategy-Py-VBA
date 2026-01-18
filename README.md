@@ -1,7 +1,8 @@
 # princing-option-strategy-py
 
 **INTRODUZIONE**
-questo progetto ha l'obiettivo di prezzare una stategia di opzioni, detta _“Bull Put Spread”_. In questa caso, la tipologia di opzioni che formano la strategia sono _asiatiche_. 
+
+Questo progetto ha l'obiettivo di prezzare una stategia di opzioni, detta _“Bull Put Spread”_. In questa caso, la tipologia di opzioni che formano la strategia sono _asiatiche_. 
 Il payoff di un'opzione asiatica è il seguente:
 - CALL= MAX(S(T)- K, 0)
 - PUT= MAX (K- S(T),0)
@@ -24,6 +25,7 @@ La strategia viene composta sommando, strike per strike, i valori delle opzioni.
 - I prezzi del sottostante su cui creare il Risk-Graph sono intervallati ogni 10 punti. I limiti inferiore e superiore vanno calcolati al 20% del prezzo attuale.
 
 **RISULTATO**
+
 Il progetto avrà come risultato finale:
 - il prezzo a scadenza della strategia
 - il grafico che mostra il payoff della strategia a scadenza

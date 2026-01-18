@@ -129,21 +129,3 @@ plt.show()
 
 BULL_putspread(4568.02 ,5068.02 ,4068.02 ,0.24 ,0.0019 ,100 ,32/252 ,0.001269841 ,500 ) #valore del bull spread a scandenza
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-

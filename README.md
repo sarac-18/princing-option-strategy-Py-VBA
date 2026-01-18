@@ -2,6 +2,8 @@
 
 **INTRODUZIONE**
 
+- linguaggi di programmazione usati: Python e VBA.
+  
 Questo progetto ha l'obiettivo di prezzare una stategia di opzioni, detta _“Bull Put Spread”_. In questa caso, la tipologia di opzioni che formano la strategia sono _asiatiche_. 
 Il payoff di un'opzione asiatica è il seguente:
 - CALL= MAX(S(T)- K, 0)

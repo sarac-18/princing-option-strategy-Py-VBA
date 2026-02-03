@@ -18,14 +18,11 @@ The overall payoff of the strategy is obtained by summing the payoffs of the ind
 ### Asian Option Payoff
 For an Asian option, the payoff depends on the average value of the underlying asset over the life of the option:
 
-- **Put option payoff:**
-\[
-\max(K - S(T), 0)
-\]
+- Put option payoff: max(K - S(T), 0)
 
 where:
-- \( K \) is the average price of the underlying during the option’s lifetime  
-- \( S(T) \) is the underlying price at maturity  
+- K = average price of the underlying during the option's lifetime
+- S(T) = underlying price at maturity
 
 ## Input Data
 - **Trade date:** 20-12-2021  

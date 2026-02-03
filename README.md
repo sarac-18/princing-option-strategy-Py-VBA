@@ -47,7 +47,7 @@ The framework is modular and can be easily extended to price different option st
 
 ### Project Structure Python
 - Read.me is important beacause there are the input to price the options strategy  : input datasets  
-- `analysis.ipynb`  : Jupyter Notebook containing the analysis
+- `Bull-put-spread-python.ipynb`  : Jupyter Notebook containing the analysis
 
 ### VBA Implementation
 ## Requirements

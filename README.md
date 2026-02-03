@@ -38,6 +38,29 @@ For the construction of the **risk graph**, underlying prices are generated at i
 The project applies a **Monte Carlo simulation approach** with \( N \) simulations and multiple scenarios to estimate the expected payoff of the options strategy.  
 The framework is modular and can be easily extended to price different option strategies or alternative payoff structures.
 
+### Python Implementation
+- `numpy`  
+- `datetime`  
+- `scipy`  
+- `math`  
+- `matplotlib.pyplot`
+
+### Project Structure Python
+- Read.me is important beacause there are the input to price the options strategy  : input datasets  
+- `analysis.ipynb`  : Jupyter Notebook containing the analysis
+
+### VBA Implementation
+## Requirements
+- Microsoft Excel  
+- Macros enabled  
+
+
+## How to Run
+1. Open the `.xlsm` file  
+2. Enable macros  
+4. Run the VBA procedures from the interface or VBA editor  
+
+
 ## Results
 The project produces:
 - The **value of the Bull Put Spread strategy at maturity**
